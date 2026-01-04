@@ -44,6 +44,17 @@ app.get('/api/status', async (c) => {
   const db = new Database(c.env.DB);
   const states = await db.getAllMonitorStates();
   const stateMap = new Map(states.map(s => [s.monitor_id, s]));
+
+  // Get recent history for status bars (last 30 checks ~ 30 minutes if checked every minute)
+  const allHistory = await db.getRecentHistory(30);
+  const historyMap = new Map<string, any[]>();
+  
+  allHistory.forEach(h => {
+    if (!historyMap.has(h.monitor_id)) {
+      historyMap.set(h.monitor_id, []);
+    }
+    historyMap.get(h.monitor_id)?.push(h);
+  });
   
   const config = loadConfig();
   const result = config.groups.map(group => ({
@@ -53,6 +64,7 @@ app.get('/api/status', async (c) => {
       return {
         ...monitor,
         state: state || { status: 'UNKNOWN', last_checked_at: 0, last_latency: 0 },
+        recent_checks: historyMap.get(monitor.id) || []
       };
     }),
   }));

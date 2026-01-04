@@ -59,6 +59,15 @@
                             </div>
                         </div>
 
+                        <!-- Status Bar -->
+                        <div class="flex space-x-0.5 mt-2 h-2.5 w-full rounded-sm overflow-hidden bg-gray-100">
+                             <div v-for="(check, index) in getRecentChecks(monitor)" :key="index"
+                                  class="flex-1 rounded-[1px]"
+                                  :class="getCheckColor(check)"
+                                  :title="new Date(check.timestamp).toLocaleString() + ' - ' + check.status + ' (' + check.latency + 'ms)'">
+                             </div>
+                        </div>
+
                         <!-- Chart Section -->
                         <div v-if="monitor.display.chart && monitor.display.history !== false" class="mt-4">
                             <button @click="toggleChart(monitor)" class="text-xs text-blue-500 hover:underline focus:outline-none">
@@ -138,6 +147,28 @@
                         }
                     }
                     return tagName;
+                };
+
+                const getRecentChecks = (monitor) => {
+                    const checks = monitor.recent_checks || [];
+                    const limit = 30;
+                    // Ensure we have exactly 'limit' items for consistent bar width
+                    // If we have less, pad with null (gray)
+                    const result = [...checks];
+                    while (result.length < limit) {
+                        result.unshift(null); // Add empty slots at the beginning (older)
+                    }
+                    return result; // result is sorted by timestamp asc
+                };
+
+                const getCheckColor = (check) => {
+                    if (!check) return 'bg-gray-200'; // No data
+                    switch (check.status) {
+                        case 'UP': return 'bg-green-400 hover:bg-green-500';
+                        case 'DEGRADED': return 'bg-yellow-400 hover:bg-yellow-500';
+                        case 'DOWN': return 'bg-red-500 hover:bg-red-600';
+                        default: return 'bg-gray-200';
+                    }
                 };
 
                 const fetchData = async () => {
@@ -268,7 +299,9 @@
                     getStatusTextColor,
                     toggleChart,
                     getTagStyle,
-                    getTagLabel
+                    getTagLabel,
+                    getRecentChecks,
+                    getCheckColor
                 };
             }
         }).mount('#app');

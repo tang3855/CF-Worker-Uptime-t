@@ -64,6 +64,19 @@ export class Database {
     return results.reverse(); // Return in chronological order
   }
 
+  async getRecentHistory(limit: number = 60): Promise<CheckHistory[]> {
+     const { results } = await this.db
+      .prepare(
+         `SELECT * FROM (
+            SELECT *, ROW_NUMBER() OVER (PARTITION BY monitor_id ORDER BY timestamp DESC) as rn
+            FROM check_history
+         ) WHERE rn <= ?`
+      )
+      .bind(limit)
+      .all<CheckHistory>();
+    return results.sort((a, b) => a.timestamp - b.timestamp);
+  }
+
   async getAllMonitorStates(): Promise<MonitorState[]> {
     const { results } = await this.db
       .prepare('SELECT * FROM monitors_state')
