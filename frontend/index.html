@@ -222,13 +222,20 @@
                 };
 
                 const getMonitorNames = (ids) => {
-                    if (!ids || !statusData.value) return ids || [];
+                    if (!ids) return [];
                     const names = [];
-                    statusData.value.forEach(group => {
-                        group.monitors.forEach(m => {
-                            if (ids.includes(m.id)) names.push(m.name);
+                    // Use config.groups if available (loaded first), otherwise statusData
+                    const groups = config.value?.groups || statusData.value;
+                    
+                    if (groups) {
+                        groups.forEach(group => {
+                            if (group.monitors) {
+                                group.monitors.forEach(m => {
+                                    if (ids.includes(m.id)) names.push(m.name);
+                                });
+                            }
                         });
-                    });
+                    }
                     return names.length > 0 ? names : ids;
                 };
 

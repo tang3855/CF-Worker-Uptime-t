@@ -41,7 +41,7 @@ settings:
       label: "Self-Hosted"
       color: "#4B5563"
 
-# incidents:
+incidents:
 #   - id: "maintenance-001"
 #     title: "Database Migration"
 #     type: "scheduled" # scheduled, routine, incident
@@ -61,19 +61,22 @@ settings:
 #     routine_schedule: "Every Sunday 03:00 UTC"
 #     affected_monitors: ["blog"]
     
-#   - id: "incident-001"
-#     title: "API High Latency"
-#     type: "incident"
-#     status: "investigating" # investigating, identified, monitoring, resolved
-#     affected_monitors: ["google", "github"]
-#     start_time: "2026-01-04T15:30:00Z"
-#     updates:
-#       - timestamp: "2026-01-04T15:30:00Z"
-#         message: "We are observing high latency on our API gateways."
-#         status: "investigating"
-#       - timestamp: "2026-01-04T16:00:00Z"
-#         message: "Issue identified as a network congestion in the upstream provider."
-#         status: "identified"
+  - id: "incident-001"
+    title: "突发故障"
+    type: "incident"
+    status: "investigating" # investigating, identified, monitoring, resolved
+    affected_monitors: ["blog_eo"]
+    start_time: "2026-01-04T15:30:00Z"
+    updates:
+      - timestamp: "2026-01-04T15:30:00Z"
+        message: "我们正在调查该问题"
+        status: "investigating"
+      - timestamp: "2026-01-04T16:00:00Z"
+        message: "问题已定位，预计将在2小时后修复"
+        status: "identified"
+      - timestamp: "2026-01-04T18:00:00Z"
+        message: "问题已解决，持续观察中"
+        status: "monitoring"
 
 groups:
   - id: "my_services"
