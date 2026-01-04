@@ -125,6 +125,17 @@
                             document.title = config.value.settings.title;
                         }
 
+                        // Update favicon
+                        if (config.value.settings?.logo) {
+                            let link = document.querySelector("link[rel~='icon']");
+                            if (!link) {
+                                link = document.createElement('link');
+                                link.rel = 'icon';
+                                document.head.appendChild(link);
+                            }
+                            link.href = config.value.settings.logo;
+                        }
+
                         const rawStatus = await statusRes.json();
                         
                         // Merge with existing data to preserve chart state if possible, or just reset
