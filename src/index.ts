@@ -124,6 +124,7 @@ async function handleScheduled(event: ScheduledEvent, env: Env, ctx: ExecutionCo
       last_latency: checkResult.latency,
       fail_count: failCount,
       first_fail_time: firstFailTime,
+      last_error: checkResult.status === 'DOWN' ? checkResult.message : null,
     };
 
     await db.upsertMonitorState(newState);

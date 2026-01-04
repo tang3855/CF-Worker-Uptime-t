@@ -46,13 +46,21 @@ async function checkHttp(monitor: Monitor): Promise<CheckResult> {
     }
 
     // 2. Validate Status
-    const expectedStatus = monitor.validation?.status || 200;
-    if (response.status !== expectedStatus) {
-      console.warn(`[Monitor] ${monitor.id} returned status ${response.status}, expected ${expectedStatus}`);
+    let expectedStatuses: number[] = [200];
+    if (monitor.validation?.status) {
+      if (Array.isArray(monitor.validation.status)) {
+        expectedStatuses = monitor.validation.status;
+      } else {
+        expectedStatuses = [monitor.validation.status];
+      }
+    }
+
+    if (!expectedStatuses.includes(response.status)) {
+      console.warn(`[Monitor] ${monitor.id} returned status ${response.status}, expected ${expectedStatuses.join(' or ')}`);
       return { 
         status: 'DOWN', 
         latency, 
-        message: `Status ${response.status} (expected ${expectedStatus})` 
+        message: `Status ${response.status} (expected ${expectedStatuses.join(',')})` 
       };
     }
 

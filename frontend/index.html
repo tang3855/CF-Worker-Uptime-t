@@ -46,6 +46,9 @@
                                 <div class="text-xs text-gray-500">
                                     {{ monitor.state.last_latency }}ms
                                 </div>
+                                <div v-if="monitor.state.status === 'DOWN' && monitor.state.last_error" class="text-xs text-red-500 mt-1 max-w-[150px] truncate" :title="monitor.state.last_error">
+                                    {{ monitor.state.last_error }}
+                                </div>
                             </div>
                         </div>
 

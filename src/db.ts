@@ -17,14 +17,15 @@ export class Database {
   async upsertMonitorState(state: MonitorState): Promise<void> {
     await this.db
       .prepare(
-        `INSERT INTO monitors_state (monitor_id, status, last_checked_at, last_latency, fail_count, first_fail_time)
-         VALUES (?, ?, ?, ?, ?, ?)
+        `INSERT INTO monitors_state (monitor_id, status, last_checked_at, last_latency, fail_count, first_fail_time, last_error)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(monitor_id) DO UPDATE SET
          status = excluded.status,
          last_checked_at = excluded.last_checked_at,
          last_latency = excluded.last_latency,
          fail_count = excluded.fail_count,
-         first_fail_time = excluded.first_fail_time`
+         first_fail_time = excluded.first_fail_time,
+         last_error = excluded.last_error`
       )
       .bind(
         state.monitor_id,
@@ -32,7 +33,8 @@ export class Database {
         state.last_checked_at,
         state.last_latency,
         state.fail_count,
-        state.first_fail_time
+        state.first_fail_time,
+        state.last_error || null
       )
       .run();
   }

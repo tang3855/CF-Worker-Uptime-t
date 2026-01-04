@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const MonitorTypeSchema = z.enum(['http', 'tcp']);
 
 export const ValidationSchema = z.object({
-  status: z.number().optional(),
+  status: z.union([z.number(), z.array(z.number())]).optional(),
   body_match: z.string().optional(), // Regex string
   headers_match: z.record(z.string()).optional(),
 });
@@ -59,6 +59,7 @@ export interface MonitorState {
   last_latency: number;
   fail_count: number;
   first_fail_time: number | null;
+  last_error?: string | null;
 }
 
 export interface CheckHistory {

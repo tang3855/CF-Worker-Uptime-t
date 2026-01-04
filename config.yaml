@@ -250,7 +250,7 @@ groups:
           chart: true
           public_link: true
         validation:
-          status: 200
+          status: [200, 201, 204]
 
       - id: "cloudflare"
         name: "Cloudflare"
@@ -307,14 +307,3 @@ groups:
           public_link: true
         validation:
           status: 200
-
-      - id: "fail_ssh"
-        name: "fail_ssh"
-        type: "tcp"
-        url: "192.168.124.14:22"
-        timeout: 5000
-        expected_latency: 1000
-        display:
-          chart: true
-          public_link: false
-

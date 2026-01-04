@@ -7,7 +7,8 @@ CREATE TABLE monitors_state (
     last_checked_at INTEGER,
     last_latency INTEGER,
     fail_count INTEGER DEFAULT 0,
-    first_fail_time INTEGER
+    first_fail_time INTEGER,
+    last_error TEXT
 );
 
 CREATE TABLE check_history (
